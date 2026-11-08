@@ -1,0 +1,27 @@
+version: "3.9"
+
+# Pré-requisito: docker compose -f ../docker-compose.infra.yml up -d
+# E todos os microserviços rodando (portas 5101-5105 e 5100 para auth)
+
+services:
+  bff:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tc-bff
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      Services__Auth: http://host.docker.internal:5100
+      Services__OS: http://host.docker.internal:5101
+      Services__Billing: http://host.docker.internal:5102
+      Services__Cadastro: http://host.docker.internal:5103
+      Services__Estoque: http://host.docker.internal:5104
+      Services__Execucao: http://host.docker.internal:5105
+      Jwt__Key: tc-local-dev-secret-key-min32chars
+      Jwt__Issuer: TechChallenger
+      Jwt__Audience: TechChallenger
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

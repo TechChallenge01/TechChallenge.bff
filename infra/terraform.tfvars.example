@@ -1,0 +1,16 @@
+aws_region   = "us-east-1"
+project_name = "techchallenge"
+
+# JWT: mesma chave usada em todos os microserviços
+jwt_key = "coloque-aqui-a-mesma-chave-jwt"
+
+# Auth Service (Lambda + API Gateway) — preencher manualmente após deploy do Auth
+service_url_auth = "https://seu-api-gateway-id.execute-api.us-east-1.amazonaws.com/prod"
+
+# As URLs dos demais serviços são resolvidas automaticamente via data sources dos ALBs.
+# Só precisa preencher se quiser sobrescrever:
+# service_url_os       = ""
+# service_url_billing  = ""
+# service_url_cadastro = ""
+# service_url_estoque  = ""
+# service_url_execucao = ""

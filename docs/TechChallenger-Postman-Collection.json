@@ -1,0 +1,477 @@
+{
+  "info": {
+    "_postman_id": "tc-fase4-collection",
+    "name": "TechChallenger — Fase 4",
+    "description": "Coleção completa de endpoints para o sistema TechChallenger (Fase 4). Autentique-se primeiro usando o endpoint Auth e o token JWT será salvo automaticamente na variável de ambiente `token`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "bff_url",      "value": "http://localhost:5000",  "type": "string" },
+    { "key": "auth_url",     "value": "http://localhost:5100",  "type": "string" },
+    { "key": "os_url",       "value": "http://localhost:5101",  "type": "string" },
+    { "key": "billing_url",  "value": "http://localhost:5102",  "type": "string" },
+    { "key": "cadastro_url", "value": "http://localhost:5103",  "type": "string" },
+    { "key": "estoque_url",  "value": "http://localhost:5104",  "type": "string" },
+    { "key": "execucao_url", "value": "http://localhost:5105",  "type": "string" },
+    { "key": "token",        "value": "",                       "type": "string" },
+    { "key": "os_id",        "value": "",                       "type": "string" },
+    { "key": "orcamento_id", "value": "",                       "type": "string" },
+    { "key": "pagamento_id", "value": "",                       "type": "string" },
+    { "key": "produto_id",   "value": "",                       "type": "string" },
+    { "key": "categoria_id", "value": "",                       "type": "string" },
+    { "key": "cliente_id",   "value": "",                       "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Autenticar (CPF + senha)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var json = pm.response.json();",
+                  "  pm.collectionVariables.set('token', json.token);",
+                  "  pm.collectionVariables.set('cliente_id', json.clienteId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": { "raw": "{{auth_url}}/auth/cpf", "host": ["{{auth_url}}"], "path": ["auth", "cpf"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Ordem de Serviço",
+      "item": [
+        {
+          "name": "Abrir OS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  var json = pm.response.json();",
+                  "  pm.collectionVariables.set('os_id', json.id || json);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"veiculoId\": \"00000000-0000-0000-0000-000000000001\",\n  \"descricaoProblema\": \"Troca de óleo e revisão geral\"\n}"
+            },
+            "url": { "raw": "{{os_url}}/ordens-servico", "host": ["{{os_url}}"], "path": ["ordens-servico"] }
+          }
+        },
+        {
+          "name": "Listar OS (paginado)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{os_url}}/ordens-servico?page=1&pageSize=10", "host": ["{{os_url}}"], "path": ["ordens-servico"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Buscar OS por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{os_url}}/ordens-servico/{{os_id}}", "host": ["{{os_url}}"], "path": ["ordens-servico", "{{os_id}}"] }
+          }
+        },
+        {
+          "name": "Iniciar Diagnóstico",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{os_url}}/ordens-servico/{{os_id}}/iniciar-diagnostico", "host": ["{{os_url}}"], "path": ["ordens-servico", "{{os_id}}", "iniciar-diagnostico"] }
+          }
+        },
+        {
+          "name": "Registrar Diagnóstico",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnostico\": \"Motor com desgaste prematuro nas buchas\",\n  \"valorEstimado\": 1500.00\n}"
+            },
+            "url": { "raw": "{{os_url}}/ordens-servico/{{os_id}}/registrar-diagnostico", "host": ["{{os_url}}"], "path": ["ordens-servico", "{{os_id}}", "registrar-diagnostico"] }
+          }
+        },
+        {
+          "name": "Cancelar OS",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Cliente desistiu do serviço\"\n}"
+            },
+            "url": { "raw": "{{os_url}}/ordens-servico/{{os_id}}/cancelar", "host": ["{{os_url}}"], "path": ["ordens-servico", "{{os_id}}", "cancelar"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Billing (Orçamentos e Pagamentos)",
+      "item": [
+        {
+          "name": "Gerar Orçamento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  var json = pm.response.json();",
+                  "  pm.collectionVariables.set('orcamento_id', json.id || json);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ordemServicoId\": \"{{os_id}}\",\n  \"clienteId\": \"{{cliente_id}}\",\n  \"itens\": [\n    { \"descricao\": \"Óleo de motor 5W30\", \"quantidade\": 1, \"valorUnitario\": 150.00 },\n    { \"descricao\": \"Mão de obra revisão\", \"quantidade\": 1, \"valorUnitario\": 350.00 }\n  ]\n}"
+            },
+            "url": { "raw": "{{billing_url}}/orcamentos", "host": ["{{billing_url}}"], "path": ["orcamentos"] }
+          }
+        },
+        {
+          "name": "Buscar Orçamento por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{billing_url}}/orcamentos/{{orcamento_id}}", "host": ["{{billing_url}}"], "path": ["orcamentos", "{{orcamento_id}}"] }
+          }
+        },
+        {
+          "name": "Aprovar Orçamento",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{billing_url}}/orcamentos/{{orcamento_id}}/aprovar", "host": ["{{billing_url}}"], "path": ["orcamentos", "{{orcamento_id}}", "aprovar"] }
+          }
+        },
+        {
+          "name": "Rejeitar Orçamento",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Valor acima do esperado\"\n}"
+            },
+            "url": { "raw": "{{billing_url}}/orcamentos/{{orcamento_id}}/rejeitar", "host": ["{{billing_url}}"], "path": ["orcamentos", "{{orcamento_id}}", "rejeitar"] }
+          }
+        },
+        {
+          "name": "Buscar Pagamento por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{billing_url}}/pagamentos/{{pagamento_id}}", "host": ["{{billing_url}}"], "path": ["pagamentos", "{{pagamento_id}}"] }
+          }
+        },
+        {
+          "name": "Webhook Mercado Pago (simulação)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-signature", "value": "ts=1234567890,v1=assinatura-hmac-sha256-aqui" },
+              { "key": "x-request-id", "value": "req-id-123" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"payment.updated\",\n  \"data\": { \"id\": \"123456789\" }\n}"
+            },
+            "url": { "raw": "{{billing_url}}/webhook/mercadopago", "host": ["{{billing_url}}"], "path": ["webhook", "mercadopago"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Cadastro",
+      "item": [
+        {
+          "name": "Criar Categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('categoria_id', pm.response.json().id || pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lubrificantes\",\n  \"descricao\": \"Óleos, graxas e fluidos\"\n}"
+            },
+            "url": { "raw": "{{cadastro_url}}/categorias", "host": ["{{cadastro_url}}"], "path": ["categorias"] }
+          }
+        },
+        {
+          "name": "Listar Categorias",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{cadastro_url}}/categorias", "host": ["{{cadastro_url}}"], "path": ["categorias"] }
+          }
+        },
+        {
+          "name": "Criar Produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('produto_id', pm.response.json().id || pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Óleo de motor 5W30\",\n  \"descricao\": \"Óleo sintético para motores modernos\",\n  \"preco\": 89.90,\n  \"categoriaId\": \"{{categoria_id}}\"\n}"
+            },
+            "url": { "raw": "{{cadastro_url}}/produtos", "host": ["{{cadastro_url}}"], "path": ["produtos"] }
+          }
+        },
+        {
+          "name": "Listar Produtos (paginado)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{cadastro_url}}/produtos?page=1&pageSize=10", "host": ["{{cadastro_url}}"], "path": ["produtos"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Buscar Produto por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{cadastro_url}}/produtos/{{produto_id}}", "host": ["{{cadastro_url}}"], "path": ["produtos", "{{produto_id}}"] }
+          }
+        },
+        {
+          "name": "Atualizar Produto",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Óleo de motor 5W30 1L\",\n  \"descricao\": \"Óleo sintético para motores modernos — 1 litro\",\n  \"preco\": 94.90,\n  \"categoriaId\": \"{{categoria_id}}\"\n}"
+            },
+            "url": { "raw": "{{cadastro_url}}/produtos/{{produto_id}}", "host": ["{{cadastro_url}}"], "path": ["produtos", "{{produto_id}}"] }
+          }
+        },
+        {
+          "name": "Inativar Produto",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{cadastro_url}}/produtos/{{produto_id}}", "host": ["{{cadastro_url}}"], "path": ["produtos", "{{produto_id}}"] }
+          }
+        },
+        {
+          "name": "Cadastrar Cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('cliente_id', pm.response.json().id || pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João da Silva\",\n  \"cpf\": \"123.456.789-09\",\n  \"email\": \"joao@email.com\",\n  \"telefone\": \"11999999999\"\n}"
+            },
+            "url": { "raw": "{{cadastro_url}}/clientes", "host": ["{{cadastro_url}}"], "path": ["clientes"] }
+          }
+        },
+        {
+          "name": "Buscar Cliente por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{cadastro_url}}/clientes/{{cliente_id}}", "host": ["{{cadastro_url}}"], "path": ["clientes", "{{cliente_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Estoque",
+      "item": [
+        {
+          "name": "Adicionar Item ao Estoque",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produtoId\": \"{{produto_id}}\",\n  \"quantidadeInicial\": 100\n}"
+            },
+            "url": { "raw": "{{estoque_url}}/estoque", "host": ["{{estoque_url}}"], "path": ["estoque"] }
+          }
+        },
+        {
+          "name": "Buscar Estoque por Produto",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{estoque_url}}/estoque/{{produto_id}}", "host": ["{{estoque_url}}"], "path": ["estoque", "{{produto_id}}"] }
+          }
+        },
+        {
+          "name": "Ajustar Estoque",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"novaQuantidade\": 150\n}"
+            },
+            "url": { "raw": "{{estoque_url}}/estoque/{{produto_id}}/ajustar", "host": ["{{estoque_url}}"], "path": ["estoque", "{{produto_id}}", "ajustar"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Execução",
+      "item": [
+        {
+          "name": "Buscar Execução por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{execucao_url}}/execucoes/{{os_id}}", "host": ["{{execucao_url}}"], "path": ["execucoes", "{{os_id}}"] }
+          }
+        },
+        {
+          "name": "Buscar Execução por Pedido ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{execucao_url}}/execucoes/pedido/{{os_id}}", "host": ["{{execucao_url}}"], "path": ["execucoes", "pedido", "{{os_id}}"] }
+          }
+        },
+        {
+          "name": "Marcar Pronto",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{execucao_url}}/execucoes/{{os_id}}/marcar-pronto", "host": ["{{execucao_url}}"], "path": ["execucoes", "{{os_id}}", "marcar-pronto"] }
+          }
+        },
+        {
+          "name": "Finalizar Execução",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valorFinal\": 1500.00\n}"
+            },
+            "url": { "raw": "{{execucao_url}}/execucoes/{{os_id}}/finalizar", "host": ["{{execucao_url}}"], "path": ["execucoes", "{{os_id}}", "finalizar"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. BFF (via proxy)",
+      "description": "Todos os endpoints via BFF. Autenticar primeiro e o token é propagado automaticamente.",
+      "item": [
+        {
+          "name": "Login via BFF",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": { "raw": "{{bff_url}}/api/auth/login", "host": ["{{bff_url}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Abrir OS via BFF",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"veiculoId\": \"00000000-0000-0000-0000-000000000001\",\n  \"descricaoProblema\": \"Troca de óleo\"\n}"
+            },
+            "url": { "raw": "{{bff_url}}/api/ordens-servico", "host": ["{{bff_url}}"], "path": ["api", "ordens-servico"] }
+          }
+        },
+        {
+          "name": "Listar OS via BFF",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{bff_url}}/api/ordens-servico?page=1&pageSize=10", "host": ["{{bff_url}}"], "path": ["api", "ordens-servico"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Listar Produtos via BFF",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{bff_url}}/api/produtos?page=1&pageSize=10", "host": ["{{bff_url}}"], "path": ["api", "produtos"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "10" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

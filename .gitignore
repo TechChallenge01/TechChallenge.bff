@@ -1,0 +1,13 @@
+bin/
+obj/
+*.user
+.vs/
+appsettings.Development.json
+terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+node_modules/
+frontend/dist/
+src/BFF/wwwroot/
