@@ -37,10 +37,10 @@ export default function Produtos() {
   }
 
   const displayRows = rows.map(p => ({
-    Nome: p.nome ?? p['Nome'], Descrição: p.descricao ?? p['Descricao'],
-    Preço: `R$ ${Number(p.preco ?? p['Preco'] ?? 0).toFixed(2)}`,
-    CategoriaId: String(p.categoriaId ?? p['CategoriaId'] ?? '').substring(0, 8),
-    Status: p.status ?? p['Status'],
+    Nome: p.nome, Descrição: p.descricao,
+    Preço: `R$ ${Number(p.preco ?? 0).toFixed(2)}`,
+    CategoriaId: String(p.categoriaId ?? '').substring(0, 8),
+    Status: p.status,
   }))
 
   return (

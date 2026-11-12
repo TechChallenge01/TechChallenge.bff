@@ -33,7 +33,7 @@ export default function Clientes() {
     } finally { setLoading(false) }
   }
 
-  const displayRows = rows.map(c => ({ Nome: c.nome ?? c['Nome'], CPF: c.cpf ?? c['Cpf'], Email: c.email ?? c['Email'], Status: c.status ?? c['Status'], _id: c.id ?? c['Id'] }))
+  const displayRows = rows.map(c => ({ Nome: c.nome, CPF: c.cpf, Email: c.email, Status: c.status, _id: c.id }))
 
   return (
     <div>
