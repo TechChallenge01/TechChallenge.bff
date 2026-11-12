@@ -1,4 +1,4 @@
-terraform {
+﻿terraform {
   required_version = ">= 1.6"
 
   required_providers {
@@ -8,9 +8,9 @@ terraform {
     }
   }
 
-  # Mesmo bucket do OS Service, chave diferente — estados independentes.
+  # Mesmo bucket do OS Service, chave diferente â€” estados independentes.
   backend "s3" {
-    bucket         = "techchallenge-tfstate"
+    bucket         = "techchallenge-tfstate-891376923749"
     key            = "techchallenge/bff/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "techchallenge-tflock"
@@ -29,3 +29,4 @@ provider "aws" {
     }
   }
 }
+
