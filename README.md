@@ -2,6 +2,10 @@
 
 > Fase 4 — FIAP SOAT · Arquitetura de Microsserviços com Saga Pattern
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.bff&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TechChallenge01_TechChallenge.bff)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.bff&metric=coverage)](https://sonarcloud.io/summary/new_code?id=TechChallenge01_TechChallenge.bff)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.bff&metric=bugs)](https://sonarcloud.io/summary/new_code?id=TechChallenge01_TechChallenge.bff)
+
 BFF responsável por **unificar o acesso a todos os microsserviços** e servir o frontend React. É o único ponto de entrada para o cliente, validando JWT e roteando as requisições para os serviços downstream. Inclui o frontend React completo da oficina TechChallenger.
 
 ---
