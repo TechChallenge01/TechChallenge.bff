@@ -4,7 +4,7 @@ public class GetPaginated : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/orcamentos", async (int page, int pageSize, HttpContext ctx, IHttpClientFactory factory, CancellationToken ct) =>
+        app.MapGet("/api/orcamentos", async (HttpContext ctx, IHttpClientFactory factory, CancellationToken ct, int page = 1, int pageSize = 50) =>
         {
             var client = factory.CreateClient("Billing");
             var req = new HttpRequestMessage(HttpMethod.Get, $"/orcamentos?page={page}&pageSize={pageSize}");

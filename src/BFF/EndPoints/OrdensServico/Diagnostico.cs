@@ -7,7 +7,7 @@ public class Diagnostico : IEndpoint
         app.MapPost("/api/ordens-servico/{id}/diagnostico", async (string id, HttpContext ctx, IHttpClientFactory factory, CancellationToken ct) =>
         {
             var client = factory.CreateClient("OS");
-            var req = new HttpRequestMessage(HttpMethod.Post, $"/ordens-servico/{id}/diagnostico");
+            var req = new HttpRequestMessage(HttpMethod.Post, $"/ordens-servico/{id}/registrar-diagnostico");
             req.Headers.TryAddWithoutValidation("Authorization", ctx.Request.Headers.Authorization.ToString());
             if (ctx.Request.ContentLength > 0)
                 req.Content = new StreamContent(ctx.Request.Body)
