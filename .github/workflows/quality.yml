@@ -52,7 +52,9 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore dependencies
-        run: dotnet restore src/BFF/BFF.csproj
+        run: |
+          dotnet restore src/BFF/BFF.csproj
+          dotnet restore tests/UnitTests/UnitTests.csproj
 
       - name: Begin SonarCloud scan
         if: ${{ env.SONAR_TOKEN != '' }}
@@ -62,11 +64,29 @@ jobs:
             /o:"${{ vars.SONAR_ORGANIZATION }}" \
             /d:sonar.token="${{ env.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.exclusions="**/obj/**,**/bin/**,**/wwwroot/**"
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.exclusions="**/obj/**,**/bin/**,**/wwwroot/**" \
+            /d:sonar.coverage.exclusions="**/Program.cs,**/EndPoints/**"
 
       - name: Build
-        run: dotnet build src/BFF/BFF.csproj --no-restore
+        run: |
+          dotnet build src/BFF/BFF.csproj --no-restore
+          dotnet build tests/UnitTests/UnitTests.csproj --no-restore
+
+      - name: Run unit tests
+        run: |
+          dotnet test tests/UnitTests/UnitTests.csproj \
+            --no-build \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./coverage \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: End SonarCloud scan
         if: ${{ env.SONAR_TOKEN != '' }}
         run: dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-bff
+          path: coverage/
