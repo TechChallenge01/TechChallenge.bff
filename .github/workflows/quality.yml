@@ -9,6 +9,10 @@ on:
       - 'tests/**'
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   frontend-build:
@@ -20,11 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm install
         working-directory: frontend
 
       - name: Build frontend
@@ -32,7 +34,7 @@ jobs:
         working-directory: frontend
 
   backend-quality:
-    name: Backend Tests & SonarCloud
+    name: Backend Tests & Quality
     runs-on: ubuntu-latest
 
     steps:
@@ -46,26 +48,25 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Install SonarCloud scanner
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore dependencies
-        run: dotnet restore src/
+        run: dotnet restore src/BFF/BFF.csproj
 
       - name: Begin SonarCloud scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: |
           dotnet sonarscanner begin \
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
             /o:"${{ vars.SONAR_ORGANIZATION }}" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.token="${{ env.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.exclusions="**/obj/**,**/bin/**,**/wwwroot/**"
 
       - name: Build
-        run: dotnet build src/ --no-restore
+        run: dotnet build src/BFF/BFF.csproj --no-restore
 
       - name: End SonarCloud scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        if: ${{ env.SONAR_TOKEN != '' }}
+        run: dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
