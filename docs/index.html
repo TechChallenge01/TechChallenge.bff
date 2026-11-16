@@ -1,1209 +1,558 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechChallenger — SOAT Fase 4</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
-  <style>
-    /* ── Tokens ── */
-    :root {
-      --bg:          #0b0d14;
-      --bg-alt:      #0f1117;
-      --surface:     #161926;
-      --surface-2:   #1d2235;
-      --border:      rgba(255,255,255,.07);
-      --fg:          #dde2f0;
-      --fg-muted:    #6e7a9a;
-      --fg-dim:      #3f4866;
-      --accent:      #5b9cf6;
-      --accent-dim:  rgba(91,156,246,.14);
-      --green:       #4ade80;
-      --green-dim:   rgba(74,222,128,.12);
-      --amber:       #fbbf24;
-      --amber-dim:   rgba(251,191,36,.12);
-      --teal:        #2dd4bf;
-      --teal-dim:    rgba(45,212,191,.12);
-      --purple:      #a78bfa;
-      --purple-dim:  rgba(167,139,250,.12);
-      --orange:      #fb923c;
-      --orange-dim:  rgba(251,146,60,.12);
-      --rose:        #f472b6;
-      --rose-dim:    rgba(244,114,182,.12);
-      /* service palette */
-      --c-os:        #5b9cf6;
-      --c-billing:   #fbbf24;
-      --c-cadastro:  #2dd4bf;
-      --c-estoque:   #4ade80;
-      --c-execucao:  #a78bfa;
-      --c-auth:      #fb923c;
-      --c-bff:       #f472b6;
-      color-scheme: dark;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechChallenger — Microsserviços Fase 4</title>
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
-    html { scroll-behavior: smooth; }
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
 
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    /* ── NAV ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(11,13,20,.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 max(24px, env(safe-area-inset-left,0px));
-    }
-    .nav-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      height: 56px;
-    }
-    .nav-logo {
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--fg);
-      text-decoration: none;
-      letter-spacing: -.3px;
-      flex-shrink: 0;
-    }
-    .nav-logo span { color: var(--accent); }
-    .nav-links {
-      display: flex;
-      gap: 2px;
-      margin-left: auto;
-      list-style: none;
-    }
-    .nav-links a {
-      color: var(--fg-muted);
-      text-decoration: none;
-      font-size: 13px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: color .15s, background .15s;
-    }
-    .nav-links a:hover { color: var(--fg); background: var(--surface); }
-    .nav-badge {
-      font-size: 11px;
-      background: var(--accent-dim);
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 600;
-      margin-left: auto;
-    }
-
-    /* ── LAYOUT ── */
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 max(24px, env(safe-area-inset-left,0px));
-    }
-
-    section { padding: 72px 0; }
-    section + section { border-top: 1px solid var(--border); }
-
-    h2 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -.5px;
-      text-wrap: balance;
-      margin-bottom: 8px;
-    }
-    h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    .section-desc {
-      color: var(--fg-muted);
-      font-size: 15px;
-      max-width: 560px;
-      margin-bottom: 36px;
-      line-height: 1.65;
-    }
-
-    /* ── HERO ── */
-    #hero {
-      padding: 100px 0 80px;
-      border-top: none;
-    }
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 12px;
-      color: var(--fg-muted);
-      font-weight: 500;
-      margin-bottom: 28px;
-    }
-    .hero-eyebrow .dot-pulse {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .3; }
-    }
-    .hero-title {
-      font-size: clamp(36px, 6vw, 60px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.08;
-      text-wrap: balance;
-      margin-bottom: 20px;
-    }
-    .hero-title .grad {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-sub {
-      font-size: 17px;
-      color: var(--fg-muted);
-      max-width: 560px;
-      line-height: 1.6;
-      margin-bottom: 36px;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity .15s, transform .1s;
-      cursor: pointer;
-    }
-    .btn:hover { opacity: .88; transform: translateY(-1px); }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--fg);
-      border: 1px solid var(--border);
-    }
-    .hero-stats {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      margin-top: 56px;
-      padding-top: 40px;
-      border-top: 1px solid var(--border);
-    }
-    .stat-item { min-width: 80px; }
-    .stat-num {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      color: var(--fg);
-      font-variant-numeric: tabular-nums;
-    }
-    .stat-label { font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
-
-    /* ── SERVICE GRID ── */
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      transition: border-color .2s, transform .15s;
-    }
-    .service-card:hover { border-color: rgba(255,255,255,.14); transform: translateY(-2px); }
-    .service-card-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .svc-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .svc-name { font-weight: 600; font-size: 14px; }
-    .svc-stack {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--fg-muted);
-      margin-bottom: 10px;
-    }
-    .svc-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.55; }
-    .svc-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 14px;
-    }
-    .tag {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-    .tag-db    { background: var(--surface-2); color: var(--fg-muted); border: 1px solid var(--border); }
-    .tag-saga  { background: var(--accent-dim); color: var(--accent); }
-    .tag-auth  { background: var(--orange-dim); color: var(--orange); }
-    .tag-k8s   { background: var(--teal-dim); color: var(--teal); }
-
-    /* ── ARCH DIAGRAM ── */
-    .arch-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px 24px;
-      overflow-x: auto;
-    }
-    .arch-diagram {
-      display: grid;
-      grid-template-rows: auto auto auto auto;
-      gap: 0;
-      min-width: 540px;
-    }
-    .arch-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-    }
-    .arch-box {
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      border: 1.5px solid;
-      position: relative;
-      white-space: nowrap;
-    }
-    .arch-label {
-      font-size: 10px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      opacity: .65;
-      margin-top: 2px;
-    }
-    .arch-connector-v {
-      width: 2px;
-      height: 32px;
-      background: var(--border);
-      margin: 0 auto;
-      position: relative;
-    }
-    .arch-connector-v::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: -3px;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 6px solid var(--fg-dim);
-    }
-    .arch-services-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 0 8px;
-    }
-    .arch-rabbit {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin: 0 0 4px;
-    }
-    .arch-rabbit-box {
-      border: 1.5px dashed rgba(251,191,36,.4);
-      background: var(--amber-dim);
-      color: var(--amber);
-      border-radius: 8px;
-      padding: 8px 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .arch-dbs-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .arch-db-box {
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .arch-line-label {
-      font-size: 10px;
-      color: var(--fg-muted);
-      text-align: center;
-      margin: 2px 0;
-    }
-
-    /* ── SAGA FLOW ── */
-    .saga-flow {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      position: relative;
-    }
-    .saga-flow::before {
-      content: '';
-      position: absolute;
-      left: 15px;
-      top: 24px;
-      bottom: 24px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--accent), var(--purple));
-    }
-    .saga-step {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 16px 0;
-    }
-    .saga-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-      color: var(--accent);
-    }
-    .saga-step.comp .saga-num { color: var(--rose); border-color: var(--rose-dim); }
-    .saga-content { flex: 1; min-width: 0; padding-top: 4px; }
-    .saga-event {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--accent);
-      background: var(--accent-dim);
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 4px;
-    }
-    .saga-step.comp .saga-event { color: var(--rose); background: var(--rose-dim); }
-    .saga-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
-    .saga-actors { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-    .actor {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 500;
-      border: 1px solid;
-    }
-
-    /* ── EVENTS TABLE ── */
-    .events-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    th {
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface); }
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
-      background: var(--surface-2);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--accent);
-    }
-
-    /* ── STACK CARDS ── */
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-    }
-    .stack-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px;
-    }
-    .stack-card-icon {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-    .stack-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .stack-card p { font-size: 12px; color: var(--fg-muted); line-height: 1.5; }
-
-    /* ── CI/CD PIPELINE ── */
-    .pipeline {
-      display: flex;
-      align-items: flex-start;
-      gap: 0;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-    .pipe-stage {
-      flex: 1;
-      min-width: 160px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-    }
-    .pipe-stage + .pipe-stage { margin-left: -1px; border-left: none; border-radius: 0; }
-    .pipe-stage:first-child { border-radius: 10px 0 0 10px; }
-    .pipe-stage:last-child { border-radius: 0 10px 10px 0; border-left: 1px solid var(--border); }
-    .pipe-stage-num {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      margin-bottom: 8px;
-    }
-    .pipe-stage h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-    .pipe-step {
-      font-size: 12px;
-      color: var(--fg-muted);
-      padding: 3px 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .pipe-step::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--border);
-      flex-shrink: 0;
-    }
-    .pipe-step.ok::before { background: var(--green); }
-
-    /* ── TESTS ── */
-    .tests-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 14px;
-    }
-    .test-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-    }
-    .test-card-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .test-icon {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .coverage-bar {
-      height: 6px;
-      background: var(--surface-2);
-      border-radius: 3px;
-      margin-top: 12px;
-      overflow: hidden;
-    }
-    .coverage-fill {
-      height: 100%;
-      border-radius: 3px;
-      background: var(--green);
-      transition: width .6s ease;
-    }
-    .coverage-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--fg-muted);
-      margin-top: 5px;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px max(24px, env(safe-area-inset-left,0px));
-      text-align: center;
-    }
-    footer p { font-size: 13px; color: var(--fg-muted); margin: 4px 0; }
-    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
-    .footer-links a { font-size: 12px; color: var(--accent); text-decoration: none; }
-    .footer-links a:hover { text-decoration: underline; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      section { padding: 48px 0; }
-      h2 { font-size: 22px; }
-      .hero-title { font-size: 32px; }
-      .hero-sub { font-size: 15px; }
-      .hero-stats { gap: 20px; }
-      .nav-links { display: none; }
-      .pipeline { flex-direction: column; gap: 8px; }
-      .pipe-stage, .pipe-stage:first-child, .pipe-stage:last-child {
-        border-radius: 10px; border: 1px solid var(--border); margin: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <a href="#" class="nav-logo">Tech<span>Challenger</span></a>
-    <ul class="nav-links">
-      <li><a href="#servicos">Serviços</a></li>
-      <li><a href="#arquitetura">Arquitetura</a></li>
-      <li><a href="#saga">Saga</a></li>
-      <li><a href="#stack">Stack</a></li>
-      <li><a href="#testes">Testes</a></li>
-      <li><a href="#cicd">CI/CD</a></li>
-    </ul>
-    <span class="nav-badge">SOAT Fase 4</span>
-  </div>
-</nav>
-
-<!-- HERO -->
-<div class="page">
-  <section id="hero">
-    <div class="hero-eyebrow">
-      <span class="dot-pulse"></span>
-      Pós-graduação SOAT · Fase 4 · Microsserviços
-    </div>
-    <h1 class="hero-title">
-      Sistema de<br><span class="grad">Oficina Mecânica</span><br>com Microsserviços
-    </h1>
-    <p class="hero-sub">
-      Plataforma distribuída para gestão de ordens de serviço, orçamentos, estoque e execução.
-      7 microsserviços com Saga Pattern coreografado, Clean Architecture e deploy na AWS.
-    </p>
-    <div class="hero-buttons">
-      <a href="#arquitetura" class="btn btn-primary">Ver Arquitetura</a>
-      <a href="#saga" class="btn btn-secondary">Fluxo Saga</a>
-      <a href="TechChallenger-Postman-Collection.json" download class="btn btn-secondary" style="color:var(--amber);">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Postman Collection
-      </a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-num">7</div>
-        <div class="stat-label">Microsserviços</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">80%+</div>
-        <div class="stat-label">Cobertura de testes</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">25+</div>
-        <div class="stat-label">Endpoints REST</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">4</div>
-        <div class="stat-label">Workflows CI/CD</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">K8s</div>
-        <div class="stat-label">+ ECS Fargate</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVIÇOS -->
-  <section id="servicos">
-    <p class="section-label">Microsserviços</p>
-    <h2>7 serviços independentes</h2>
-    <p class="section-desc">Cada serviço tem seu próprio repositório, banco de dados, pipeline CI/CD e manifestos Kubernetes. Comunicam-se via eventos assíncronos (RabbitMQ) e HTTP síncrono (via BFF).</p>
-    <div class="service-grid">
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-bff)"></span>
-          <span class="svc-name">BFF + Frontend</span>
-        </div>
-        <div class="svc-stack">.NET 10 · React + Vite · TypeScript</div>
-        <div class="svc-desc">Ponto de entrada único. Proxy reverso para os 6 serviços downstream, validação JWT, serve o SPA React. Build multi-stage Docker (Node 20 → .NET 10).</div>
-        <div class="svc-tags">
-          <span class="tag tag-k8s">Ingress ALB</span>
-          <span class="tag tag-saga">JWT Guard</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-auth)"></span>
-          <span class="svc-name">Auth Service</span>
-        </div>
-        <div class="svc-stack">.NET 8 · AWS Lambda · SQL Server RDS</div>
-        <div class="svc-desc">Autenticação e autorização. Emite tokens JWT (HS256). Único serviço com banco SQL relacional. Deploy como Lambda via <code>AddAWSLambdaHosting</code>.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">SQL Server RDS</span>
-          <span class="tag tag-auth">Lambda</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-os)"></span>
-          <span class="svc-name">OS Service</span>
-        </div>
-        <div class="svc-stack">.NET 10 · Clean Architecture · MongoDB</div>
-        <div class="svc-desc">Ponto de entrada da Saga. Gerencia o ciclo de vida das Ordens de Serviço: Recebida → EmDiagnóstico → AguardandoAprovação → EmExecução → Finalizada → Entregue.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">MongoDB</span>
-          <span class="tag tag-saga">Saga entry</span>
-          <span class="tag tag-k8s">K8s + ECS</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-billing)"></span>
-          <span class="svc-name">Billing Service</span>
-        </div>
-        <div class="svc-stack">.NET 10 · Clean Architecture · MongoDB</div>
-        <div class="svc-desc">Orçamentos e pagamentos via MercadoPago PIX. Recebe <code>os.diagnostico.registrado</code>, cria orçamento, aguarda aprovação do cliente e confirma pagamento.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">MongoDB</span>
-          <span class="tag tag-saga">MercadoPago PIX</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-cadastro)"></span>
-          <span class="svc-name">Cadastro Service</span>
-        </div>
-        <div class="svc-stack">.NET 10 · Clean Architecture · MongoDB</div>
-        <div class="svc-desc">Gestão de Clientes, Produtos e Categorias. Dados de referência utilizados pelos demais serviços. CRUD completo com paginação.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">MongoDB</span>
-          <span class="tag tag-k8s">K8s + ECS</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-estoque)"></span>
-          <span class="svc-name">Estoque Service</span>
-        </div>
-        <div class="svc-stack">.NET 10 · Clean Architecture · MongoDB</div>
-        <div class="svc-desc">Controle de itens e reservas. Ouve <code>os.aberta</code> para reservar peças, libera ao cancelar. Ajuste manual de estoque com histórico.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">MongoDB</span>
-          <span class="tag tag-saga">Reservas</span>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-top">
-          <span class="svc-dot" style="background:var(--c-execucao)"></span>
-          <span class="svc-name">Execução Service</span>
-        </div>
-        <div class="svc-stack">.NET 10 · Clean Architecture · MongoDB</div>
-        <div class="svc-desc">Execução técnica das OSs com etapas granulares. Ouve <code>pagamento.confirmado</code> para iniciar. Publica <code>execucao.finalizada</code> ao concluir o reparo.</div>
-        <div class="svc-tags">
-          <span class="tag tag-db">MongoDB</span>
-          <span class="tag tag-saga">Saga end</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ARQUITETURA -->
-  <section id="arquitetura">
-    <p class="section-label">Arquitetura</p>
-    <h2>Visão geral do sistema</h2>
-    <p class="section-desc">O BFF é o único ponto de entrada HTTP. Os serviços se comunicam entre si exclusivamente via eventos RabbitMQ — sem chamadas diretas entre serviços.</p>
-    <div class="arch-wrap">
-      <div style="text-align:center;margin-bottom:24px;font-size:12px;color:var(--fg-muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase;">Fluxo de comunicação</div>
-
-      <!-- Internet → BFF -->
-      <div style="text-align:center;margin-bottom:4px;">
-        <div class="arch-box" style="display:inline-block;border-color:rgba(244,114,182,.4);background:var(--rose-dim);color:var(--rose);">
-          Cliente / Internet
-          <div class="arch-label">HTTPS</div>
-        </div>
-      </div>
-      <div class="arch-connector-v"></div>
-
-      <!-- BFF -->
-      <div style="text-align:center;margin-bottom:4px;">
-        <div class="arch-box" style="display:inline-block;border-color:rgba(244,114,182,.4);background:var(--rose-dim);color:var(--rose);min-width:200px;">
-          BFF + React SPA
-          <div class="arch-label">ALB Ingress · .NET 10</div>
-        </div>
-      </div>
-      <div class="arch-line-label">HTTP síncrono (proxy reverso)</div>
-      <div class="arch-connector-v" style="height:24px;"></div>
-
-      <!-- Services row -->
-      <div class="arch-services-row" style="margin-bottom:16px;">
-        <div class="arch-box" style="border-color:rgba(251,146,60,.4);background:var(--orange-dim);color:var(--orange);">Auth<div class="arch-label">Lambda</div></div>
-        <div class="arch-box" style="border-color:rgba(91,156,246,.4);background:var(--accent-dim);color:var(--accent);">OS<div class="arch-label">ECS/K8s</div></div>
-        <div class="arch-box" style="border-color:rgba(251,191,36,.4);background:var(--amber-dim);color:var(--amber);">Billing<div class="arch-label">ECS/K8s</div></div>
-        <div class="arch-box" style="border-color:rgba(45,212,191,.4);background:var(--teal-dim);color:var(--teal);">Cadastro<div class="arch-label">ECS/K8s</div></div>
-        <div class="arch-box" style="border-color:rgba(74,222,128,.4);background:var(--green-dim);color:var(--green);">Estoque<div class="arch-label">ECS/K8s</div></div>
-        <div class="arch-box" style="border-color:rgba(167,139,250,.4);background:var(--purple-dim);color:var(--purple);">Execução<div class="arch-label">ECS/K8s</div></div>
-      </div>
-
-      <!-- RabbitMQ -->
-      <div class="arch-rabbit">
-        <div style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--border));max-width:200px;"></div>
-        <div class="arch-rabbit-box">RabbitMQ — exchange tech.saga (topic) + DLQs</div>
-        <div style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--border));max-width:200px;"></div>
-      </div>
-      <div class="arch-line-label" style="margin-bottom:16px;">eventos assíncronos · Saga Pattern coreografado</div>
-
-      <!-- DBs -->
-      <div class="arch-dbs-row">
-        <div class="arch-db-box" style="background:var(--surface-2);border:1px solid var(--border);color:var(--fg-muted);">MongoDB<div style="font-size:10px;opacity:.7;">OS · Billing · Cadastro · Estoque · Execução</div></div>
-        <div class="arch-db-box" style="background:var(--orange-dim);border:1px solid rgba(251,146,60,.2);color:var(--orange);">SQL Server RDS<div style="font-size:10px;opacity:.8;">Auth Service</div></div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- SAGA -->
-  <section id="saga">
-    <p class="section-label">Saga Pattern</p>
-    <h2>Coreografia via RabbitMQ</h2>
-    <p class="section-desc">Escolhemos Coreografia (sem orquestrador central) para garantir desacoplamento total e eliminar ponto único de falha. Cada serviço conhece apenas os eventos que deve publicar e consumir.</p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px;" class="saga-cols">
-      <div>
-        <h3 style="margin-bottom:16px;color:var(--accent);">Fluxo feliz</h3>
-        <div class="saga-flow">
-          <div class="saga-step">
-            <div class="saga-num">1</div>
-            <div class="saga-content">
-              <span class="saga-event">os.aberta</span>
-              <div class="saga-desc">Cliente abre OS → <strong>OS Service</strong> publica evento.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-estoque);border-color:var(--green-dim)">Estoque reserva peças</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step">
-            <div class="saga-num">2</div>
-            <div class="saga-content">
-              <span class="saga-event">os.diagnostico.registrado</span>
-              <div class="saga-desc">Mecânico registra diagnóstico com valor estimado.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-billing);border-color:var(--amber-dim)">Billing cria orçamento</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step">
-            <div class="saga-num">3</div>
-            <div class="saga-content">
-              <span class="saga-event">pagamento.confirmado</span>
-              <div class="saga-desc">Cliente aprova orçamento e paga via PIX.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-os);border-color:var(--accent-dim)">OS → EmExecução</span>
-                <span class="actor" style="color:var(--c-execucao);border-color:var(--purple-dim)">Execução inicia</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step">
-            <div class="saga-num">4</div>
-            <div class="saga-content">
-              <span class="saga-event">execucao.finalizada</span>
-              <div class="saga-desc">Mecânico conclui o reparo com valor final.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-os);border-color:var(--accent-dim)">OS → Finalizada</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step">
-            <div class="saga-num">5</div>
-            <div class="saga-content">
-              <span class="saga-event">os.entregue</span>
-              <div class="saga-desc">Veículo entregue ao cliente. Saga concluída.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 style="margin-bottom:16px;color:var(--rose);">Compensação (rollback)</h3>
-        <div class="saga-flow">
-          <div class="saga-step comp">
-            <div class="saga-num">C1</div>
-            <div class="saga-content">
-              <span class="saga-event">pagamento.falhou</span>
-              <div class="saga-desc">Pagamento rejeitado pelo MercadoPago.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-os);border-color:var(--accent-dim)">OS → Cancelada</span>
-                <span class="actor" style="color:var(--c-estoque);border-color:var(--green-dim)">Estoque libera peças</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step comp">
-            <div class="saga-num">C2</div>
-            <div class="saga-content">
-              <span class="saga-event">os.cancelada</span>
-              <div class="saga-desc">Cliente solicita cancelamento após diagnóstico.</div>
-              <div class="saga-actors">
-                <span class="actor" style="color:var(--c-billing);border-color:var(--amber-dim)">Billing estorna</span>
-                <span class="actor" style="color:var(--c-estoque);border-color:var(--green-dim)">Estoque libera</span>
-              </div>
-            </div>
-          </div>
-          <div class="saga-step comp">
-            <div class="saga-num">DLQ</div>
-            <div class="saga-content">
-              <span class="saga-event" style="color:var(--rose);background:var(--rose-dim)">Dead Letter Queue</span>
-              <div class="saga-desc">Cada fila tem DLQ dedicada. Mensagens não processadas após 3 tentativas são retidas para análise e reprocessamento manual.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        background: '#000000',
+                        surface: '#0a0a0a',
+                        surface2: '#111111',
+                        border: 'rgba(255,255,255,0.1)',
+                        accent: '#3b82f6',
+                        accent2: '#8b5cf6',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2a8af633 0deg, #a853ba33 180deg, #e92a6733 360deg)',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-      @media (max-width: 700px) {
-        .saga-cols { grid-template-columns: 1fr !important; }
-      }
+        body { background-color: #000; color: #fff; overflow-x: hidden; }
+        .ambient-glow {
+            position: fixed; top: -20vh; left: 50%; transform: translateX(-50%);
+            width: 80vw; height: 50vh;
+            background: theme('backgroundImage.hero-glow');
+            filter: blur(100px); opacity: 0.5; z-index: -1; pointer-events: none;
+        }
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            position: absolute; inset: 0; z-index: -1;
+        }
+        .glass-card {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.08);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255,255,255,.2);
+            background: rgba(255,255,255,.05);
+            transform: translateY(-2px);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .layer-box { transition: all 0.3s ease; }
+        .layer-box:hover { transform: scale(1.02) translateX(10px); border-color: rgba(139,92,246,.5); box-shadow: 0 0 20px rgba(139,92,246,.1); }
     </style>
+</head>
+<body class="antialiased selection:bg-accent2 selection:text-white">
 
-    <p class="section-label" style="margin-top:40px;">Matriz de Eventos</p>
-    <div class="events-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Routing Key</th>
-            <th>Publicado por</th>
-            <th>Consumido por</th>
-            <th>Ação desencadeada</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>os.aberta</code></td>
-            <td><span style="color:var(--c-os)">OS</span></td>
-            <td>Estoque</td>
-            <td>Reserva peças para a OS</td>
-          </tr>
-          <tr>
-            <td><code>os.diagnostico.registrado</code></td>
-            <td><span style="color:var(--c-os)">OS</span></td>
-            <td>Billing</td>
-            <td>Cria orçamento com valor estimado</td>
-          </tr>
-          <tr>
-            <td><code>pagamento.confirmado</code></td>
-            <td><span style="color:var(--c-billing)">Billing</span></td>
-            <td>OS, Execução</td>
-            <td>OS muda para EmExecução; Execução inicia etapas</td>
-          </tr>
-          <tr>
-            <td><code>pagamento.falhou</code></td>
-            <td><span style="color:var(--c-billing)">Billing</span></td>
-            <td>OS, Estoque</td>
-            <td>OS cancela; Estoque libera reserva</td>
-          </tr>
-          <tr>
-            <td><code>execucao.finalizada</code></td>
-            <td><span style="color:var(--c-execucao)">Execução</span></td>
-            <td>OS</td>
-            <td>OS muda para Finalizada com valor final</td>
-          </tr>
-          <tr>
-            <td><code>os.cancelada</code></td>
-            <td><span style="color:var(--c-os)">OS</span></td>
-            <td>Billing, Estoque</td>
-            <td>Billing estorna; Estoque libera peças</td>
-          </tr>
-          <tr>
-            <td><code>os.entregue</code></td>
-            <td><span style="color:var(--c-os)">OS</span></td>
-            <td>—</td>
-            <td>Fim da Saga — veículo entregue</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <div class="ambient-glow"></div>
 
-  <!-- STACK -->
-  <section id="stack">
-    <p class="section-label">Stack Técnica</p>
-    <h2>Tecnologias utilizadas</h2>
-    <p class="section-desc">Escolhas feitas com foco em requisitos do curso, escalabilidade e aderência a boas práticas de microsserviços.</p>
-    <div class="stack-grid">
-      <div class="stack-card">
-        <div class="stack-card-icon">⚙️</div>
-        <h4>.NET 10 + Clean Architecture</h4>
-        <p>5 camadas: Domain, Shared, Application, Infra, API. Inversão de dependência em todos os serviços .NET 10. Auth usa .NET 8 + Lambda.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">🐇</div>
-        <h4>RabbitMQ 3.13</h4>
-        <p>Exchange topic <code>tech.saga</code> para coreografia. Uma DLQ dedicada por fila. MassTransit como abstração de consumo.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">🍃</div>
-        <h4>MongoDB 7.0</h4>
-        <p>NoSQL para OS, Billing, Cadastro, Estoque e Execução. Document Model com histórico de status embutido por documento.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">🗄️</div>
-        <h4>SQL Server RDS</h4>
-        <p>Banco relacional para Auth Service — cumpre o requisito de banco SQL do curso. Entity Framework Core com Migrations.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">☁️</div>
-        <h4>AWS ECS Fargate + EKS</h4>
-        <p>Deploy primário em ECS Fargate (serverless containers). Manifestos Kubernetes (K8s) com HPA para escalonamento automático.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">⚡</div>
-        <h4>AWS Lambda</h4>
-        <p>Auth Service roda como Lambda via <code>AddAWSLambdaHosting</code>. Cold start mínimo com .NET Native AOT-ready.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">💳</div>
-        <h4>MercadoPago PIX</h4>
-        <p>Integração de pagamento via PIX no Billing Service. Webhook para confirmação assíncrona de pagamento.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">📊</div>
-        <h4>Datadog StatsD</h4>
-        <p>Métricas de observabilidade via <code>IMetricsService</code> / <code>DatadogMetricsService</code>. Contadores por operação e por status de OS.</p>
-      </div>
-      <div class="stack-card">
-        <div class="stack-card-icon">🏗️</div>
-        <h4>Terraform</h4>
-        <p>Infraestrutura como código. Backend S3 por serviço. Provisiona ECS, ECR, RDS, Load Balancers, Security Groups.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTES -->
-  <section id="testes">
-    <p class="section-label">Qualidade de Código</p>
-    <h2>Testes e cobertura</h2>
-    <p class="section-desc">Cobertura mínima de 80% validada automaticamente pelo SonarCloud em cada pull request. Branch protection impede merges que quebrem os testes.</p>
-    <div class="tests-grid">
-      <div class="test-card">
-        <div class="test-card-top">
-          <div class="test-icon" style="background:var(--accent-dim)">🧪</div>
-          <div>
-            <h4>Testes Unitários</h4>
-            <div style="font-size:12px;color:var(--fg-muted)">xUnit + Moq + FluentAssertions</div>
-          </div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-white font-semibold tracking-tight">
+                <i class="ph ph-hexagon-fill text-accent text-2xl"></i>
+                <span>TechChallenge Fase 4</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm text-gray-400 font-medium">
+                <a href="#video" class="hover:text-white transition-colors">Apresentação</a>
+                <a href="#services" class="hover:text-white transition-colors">Serviços</a>
+                <a href="#architecture" class="hover:text-white transition-colors">Arquitetura</a>
+                <a href="#saga" class="hover:text-white transition-colors">Saga</a>
+                <a href="#repos" class="hover:text-white transition-colors">Repositórios</a>
+                <a href="#team" class="hover:text-white transition-colors">Equipe</a>
+            </div>
+            <a href="https://github.com/TechChallenge01" target="_blank"
+               class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2">
+                <i class="ph ph-github-logo text-lg"></i> Organização
+            </a>
         </div>
-        <p style="font-size:13px;color:var(--fg-muted)">Cobertura do Domain e Application em todos os 5 serviços .NET 10. Máquina de estados de OS, transições de Billing, reservas de Estoque e etapas de Execução.</p>
-        <div class="coverage-bar"><div class="coverage-fill" style="width:85%"></div></div>
-        <div class="coverage-label"><span>Cobertura mínima exigida</span><span style="color:var(--green);font-weight:600">80%+</span></div>
-      </div>
+    </nav>
 
-      <div class="test-card">
-        <div class="test-card-top">
-          <div class="test-icon" style="background:var(--purple-dim)">📋</div>
-          <div>
-            <h4>BDD — Reqnroll</h4>
-            <div style="font-size:12px;color:var(--fg-muted)">Gherkin · SpecFlow community fork</div>
-          </div>
+    <!-- Hero -->
+    <section class="relative pt-40 pb-20 px-6 min-h-[90vh] flex flex-col items-center justify-center text-center overflow-hidden">
+        <div class="grid-bg"></div>
+        <div class="max-w-4xl mx-auto z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-gray-300 mb-8">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Fase 4 · Microsserviços · Saga Pattern Coreografado · ECS Fargate
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-tight reveal">
+                TechChallenger <br>
+                <span class="text-gradient">Microsserviços</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto reveal" style="transition-delay:100ms">
+                Solução com 7 microsserviços independentes em <strong class="text-white">.NET 10</strong>,
+                comunicação assíncrona via <strong class="text-white">Saga Pattern Coreografado</strong> com RabbitMQ,
+                deploy em <strong class="text-white">AWS ECS Fargate</strong>, banco <strong class="text-white">MongoDB</strong>
+                e qualidade de código com SonarCloud.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal" style="transition-delay:200ms">
+                <a href="#video"
+                   class="px-8 py-3 rounded-full bg-white text-black font-semibold hover:bg-gray-200 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                    <i class="ph ph-play-circle text-xl"></i> Assistir Apresentação
+                </a>
+                <a href="#repos"
+                   class="px-8 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all w-full sm:w-auto flex items-center justify-center gap-2">
+                    <i class="ph ph-code text-xl"></i> Ver Repositórios
+                </a>
+            </div>
         </div>
-        <p style="font-size:13px;color:var(--fg-muted)">3 cenários Gherkin no OS Service: fluxo completo da Saga, cancelamento com compensação e validação de transição inválida de status.</p>
-        <div style="margin-top:12px;">
-          <code style="font-size:11px;display:block;margin:4px 0">Given uma OS no status "Recebida"</code>
-          <code style="font-size:11px;display:block;margin:4px 0">When o pagamento é confirmado</code>
-          <code style="font-size:11px;display:block;margin:4px 0">Then o status deve ser "EmExecução"</code>
+    </section>
+
+    <!-- Video -->
+    <section id="video" class="py-24 px-6 relative border-t border-white/10 bg-surface">
+        <div class="max-w-5xl mx-auto reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Vídeo de Apresentação</h2>
+                <p class="text-gray-400">Demonstração da solução completa — Saga Pattern, deploys independentes e fluxo da Ordem de Serviço.</p>
+            </div>
+            <div class="glass-card p-2 md:p-4 rounded-2xl relative group overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <a href="https://www.youtube.com/watch?v=OIpDBQ6bIFo" target="_blank" rel="noopener noreferrer"
+                   class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-white/15 rounded-xl hover:bg-white/5 transition-colors relative z-10">
+                    <i class="ph ph-youtube-logo text-6xl text-red-500 mb-3 block group-hover:scale-110 transition-transform"></i>
+                    <p class="text-sm font-medium text-white">Assistir no YouTube</p>
+                    <p class="text-xs text-gray-500 mt-1">Saga Pattern · 7 microsserviços · ECS Fargate · MongoDB · SonarCloud</p>
+                </a>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div class="test-card">
-        <div class="test-card-top">
-          <div class="test-icon" style="background:var(--teal-dim)">🔍</div>
-          <div>
-            <h4>SonarCloud</h4>
-            <div style="font-size:12px;color:var(--fg-muted)">Análise estática · Quality Gate</div>
-          </div>
+    <!-- Microsserviços -->
+    <section id="services" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 reveal">
+                <h2 class="text-3xl font-bold mb-4">Microsserviços</h2>
+                <p class="text-gray-400 max-w-2xl">7 serviços independentes, cada um com repositório, banco de dados (MongoDB ou SQL Server) e pipeline CI/CD próprios.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-8 reveal" style="transition-delay:100ms">
+                    <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-wrench"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">OS Service</h3>
+                    <p class="text-gray-400 text-sm">Ciclo de vida completo das Ordens de Serviço. Ponto de entrada da Saga — publica e consome eventos coreografados via RabbitMQ.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:200ms">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-money"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Billing Service</h3>
+                    <p class="text-gray-400 text-sm">Orçamentos e pagamentos com integração ao Mercado Pago via webhook. Participa da Saga aguardando confirmação de pagamento.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:300ms">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-users"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Cadastro Service</h3>
+                    <p class="text-gray-400 text-sm">Clientes, produtos e emissão de JWT. Único provedor de identidade do sistema — todos os serviços validam o token gerado aqui.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:400ms">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-package"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Estoque Service</h3>
+                    <p class="text-gray-400 text-sm">Reserva e liberação de peças. Guardião de recursos na Saga — rollback automático ao consumir o evento <code class="text-xs bg-black/50 px-1 py-0.5 rounded">os.cancelada</code>.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:500ms">
+                    <div class="w-12 h-12 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-lightning"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Execução Service</h3>
+                    <p class="text-gray-400 text-sm">Fila de execução dos reparos. Inicia após confirmação de pagamento e notifica o OS Service ao concluir.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:600ms">
+                    <div class="w-12 h-12 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-browsers"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">BFF</h3>
+                    <p class="text-gray-400 text-sm">Único ponto de entrada para o cliente. Valida JWT, roteia chamadas para os serviços downstream e serve o frontend React embutido.</p>
+                </div>
+                <div class="glass-card p-8 reveal md:col-start-2" style="transition-delay:700ms">
+                    <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-function"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Auth Service</h3>
+                    <p class="text-gray-400 text-sm">Serverless em <strong class="text-white">AWS Lambda</strong>. Autenticação por CPF e emissão de JWT. Único serviço com banco <strong class="text-white">SQL Server no RDS</strong> (ACID para dados de identidade).</p>
+                </div>
+            </div>
         </div>
-        <p style="font-size:13px;color:var(--fg-muted)">Análise automática em cada push/PR. Quality Gate exige cobertura ≥ 80%, zero bugs críticos e zero vulnerabilidades de segurança. Gratuito para repos públicos.</p>
-        <div style="margin-top:12px;font-size:12px;color:var(--fg-muted)">
-          <span style="color:var(--green)">✓</span> Coverage  &nbsp;
-          <span style="color:var(--green)">✓</span> Duplications  &nbsp;
-          <span style="color:var(--green)">✓</span> Security
+    </section>
+
+    <!-- Arquitetura -->
+    <section id="architecture" class="py-24 px-6 bg-surface border-y border-white/10 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-accent2/10 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center relative z-10">
+
+            <div class="w-full lg:w-1/2 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent2 mb-6">
+                    <i class="ph ph-layers align-middle mr-1"></i> Clean Architecture
+                </div>
+                <h2 class="text-4xl font-bold mb-6">Arquitetura por Domínio</h2>
+                <p class="text-gray-400 mb-6">Cada microsserviço segue <strong class="text-white">Clean Architecture</strong> com 4 camadas (Domain, Application, Infra, API), garantindo que as regras de negócio sejam agnósticas a banco de dados e frameworks.</p>
+                <ul class="space-y-4 text-sm text-gray-300">
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div><strong class="text-white block">Desacoplamento total</strong>Cada serviço tem seu próprio repositório, banco de dados e deploy independente.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div><strong class="text-white block">MongoDB como banco principal</strong>Schema flexível para documentos heterogêneos em todos os 6 serviços de domínio.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div><strong class="text-white block">SQL Server no Auth (Lambda)</strong>Banco relacional com garantias ACID para dados de identidade e autenticação.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="ph ph-check-circle text-accent text-lg mt-0.5"></i>
+                        <div><strong class="text-white block">CI/CD independente</strong>GitHub Actions por repositório: testes, SonarCloud e deploy no ECS Fargate a cada push.</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Infra Stack Visual -->
+            <div class="w-full lg:w-1/2 reveal font-mono text-sm">
+                <div class="glass-card p-6 border-l-4 border-l-blue-500 layer-box mb-1">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-blue-400 font-bold">Cliente / Browser</span>
+                        <span class="text-gray-500 text-xs">HTTPS</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">React + Vite</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">TypeScript</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-down"></i> proxy + JWT</div>
+                <div class="glass-card p-6 border-l-4 border-l-cyan-500 layer-box mb-1">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-cyan-400 font-bold">BFF — Gateway</span>
+                        <span class="text-gray-500 text-xs">ECS Fargate</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Validação JWT</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Roteamento</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-down"></i> HTTP interno</div>
+                <div class="glass-card p-6 border-l-4 border-l-purple-500 layer-box mb-1 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-purple-400 font-bold">Serviços de Domínio</span>
+                            <span class="text-gray-500 text-xs">ECS Fargate</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">OS</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">Billing</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">Cadastro</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">Estoque</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">Execução</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-down"></i> MongoDB + RabbitMQ Saga</div>
+                <div class="glass-card p-6 border-l-4 border-l-gray-500 layer-box mb-1">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-400 font-bold">EC2 t3.micro — Infraestrutura</span>
+                        <span class="text-gray-500 text-xs">EC2</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">MongoDB 7</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">RabbitMQ 3.13</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-300 border border-gray-500/20">exchange tech.saga</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 justify-center my-1 text-gray-600 text-[10px]"><i class="ph ph-arrow-up"></i> Auth separado em Lambda</div>
+                <div class="glass-card p-6 border-l-4 border-l-red-500 layer-box">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-red-400 font-bold">Auth Service</span>
+                        <span class="text-gray-500 text-xs">AWS Lambda + RDS</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-300 border border-red-500/20">POST /auth/cpf</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-300 border border-red-500/20">SQL Server RDS</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div class="test-card">
-        <div class="test-card-top">
-          <div class="test-icon" style="background:var(--amber-dim)">🔒</div>
-          <div>
-            <h4>Branch Protection</h4>
-            <div style="font-size:12px;color:var(--fg-muted)">GitHub · Status Check obrigatório</div>
-          </div>
+    <!-- Saga Pattern -->
+    <section id="saga" class="py-24 px-6 relative overflow-hidden">
+        <div class="absolute left-0 top-0 w-[500px] h-[500px] bg-accent/10 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="mb-16 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent mb-6">
+                    <i class="ph ph-arrows-clockwise align-middle mr-1"></i> Saga Coreografado
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Saga Pattern via RabbitMQ</h2>
+                <p class="text-gray-400 max-w-2xl">Cada serviço conhece apenas os eventos que deve publicar e consumir. Sem orquestrador central — sem ponto único de falha.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div class="glass-card p-8 reveal" style="transition-delay:100ms">
+                    <div class="w-12 h-12 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-check-circle"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">Fluxo Principal</h3>
+                    <div class="space-y-2 text-sm font-mono">
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-green-400">→</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">os.aberta</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-green-400">→</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">diagnostico.concluido</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-green-400">→</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">orcamento.aprovado</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-green-400">→</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">pagamento.confirmado</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-green-400">→</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">execucao.finalizada</code></div>
+                    </div>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:200ms">
+                    <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-x-circle"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">Compensação</h3>
+                    <div class="space-y-2 text-sm font-mono">
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-red-400">←</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">orcamento.rejeitado</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-red-400">←</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">pagamento.falhou</code></div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-red-400">←</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">os.cancelada</code></div>
+                        <div class="flex items-center gap-2 text-gray-400 mt-3"><span class="text-orange-400">⚠</span> <code class="text-xs bg-black/50 px-1.5 py-0.5 rounded">os.saga.dlq</code> <span class="font-sans text-xs text-gray-500">Dead Letter Queue</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 reveal" style="transition-delay:100ms">
+                    <i class="ph ph-plug text-xl text-accent mb-4 block"></i>
+                    <h4 class="font-semibold mb-2">Desacoplamento Total</h4>
+                    <p class="text-gray-400 text-xs">Nenhum serviço conhece os outros diretamente. Comunicação exclusiva via eventos.</p>
+                </div>
+                <div class="glass-card p-6 reveal" style="transition-delay:200ms">
+                    <i class="ph ph-shield text-xl text-green-400 mb-4 block"></i>
+                    <h4 class="font-semibold mb-2">Sem Ponto Único de Falha</h4>
+                    <p class="text-gray-400 text-xs">Sem orquestrador central. Um serviço fora do ar não paralisa o restante.</p>
+                </div>
+                <div class="glass-card p-6 reveal" style="transition-delay:300ms">
+                    <i class="ph ph-trend-up text-xl text-purple-400 mb-4 block"></i>
+                    <h4 class="font-semibold mb-2">Escalabilidade Independente</h4>
+                    <p class="text-gray-400 text-xs">Cada serviço escala, faz deploy e opera sem coordenação explícita com os demais.</p>
+                </div>
+                <div class="glass-card p-6 reveal" style="transition-delay:400ms">
+                    <i class="ph ph-queue text-xl text-orange-400 mb-4 block"></i>
+                    <h4 class="font-semibold mb-2">RabbitMQ Topic Exchange</h4>
+                    <p class="text-gray-400 text-xs">Exchange <code class="text-xs bg-black/50 px-1 py-0.5 rounded">tech.saga</code> (Topic, durable) com Dead Letter Queue para falhas.</p>
+                </div>
+            </div>
         </div>
-        <p style="font-size:13px;color:var(--fg-muted)">PR obrigatório para <code>main</code>. Status check <code>Tests &amp; SonarCloud</code> deve passar antes do merge. Nenhum código sem testes chega à branch principal.</p>
-        <div style="margin-top:12px;font-size:12px;color:var(--fg-muted)">
-          <span style="color:var(--green)">✓</span> Require PR  &nbsp;
-          <span style="color:var(--green)">✓</span> Status checks  &nbsp;
-          <span style="color:var(--green)">✓</span> No force push
+    </section>
+
+    <!-- Infraestrutura -->
+    <section class="py-24 px-6 bg-surface border-y border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent2 mb-6">
+                    <i class="ph ph-cloud align-middle mr-1"></i> Fase 4
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Infraestrutura & DevOps</h2>
+                <p class="text-gray-400 max-w-2xl">7 serviços com deploy e CI/CD independentes. Containers no ECS Fargate, mensageria e banco centralizados no EC2.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-8 reveal" style="transition-delay:100ms">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-cloud"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">AWS ECS Fargate</h3>
+                    <p class="text-gray-400 text-sm">Containers serverless sem gerenciamento de EC2. Deploy independente por serviço com ALB dedicado. <code class="text-xs bg-black/50 px-1 py-0.5 rounded">us-east-1</code></p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:200ms">
+                    <div class="w-12 h-12 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-database"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">MongoDB 7</h3>
+                    <p class="text-gray-400 text-sm">Schema flexível para documentos heterogêneos de OS, orçamentos e estoque. Rodando em EC2 t3.micro.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:300ms">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-queue"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">RabbitMQ 3.13</h3>
+                    <p class="text-gray-400 text-sm">Suporte nativo a Topic Exchange e Dead Letter Queues. Exchange <code class="text-xs bg-black/50 px-1 py-0.5 rounded">tech.saga</code> (durable). Rodando no mesmo EC2.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:400ms">
+                    <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-function"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">AWS Lambda + RDS</h3>
+                    <p class="text-gray-400 text-sm">Auth Service serverless por ser stateless e de baixa frequência. SQL Server no RDS pela necessidade de ACID em dados de identidade.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:500ms">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-git-branch"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">CI/CD — GitHub Actions</h3>
+                    <p class="text-gray-400 text-sm">Pipeline independente por repositório: testes unitários + BDD, SonarCloud, build Docker, push ECR e deploy ECS a cada push em <code class="text-xs bg-black/50 px-1 py-0.5 rounded">main</code>.</p>
+                </div>
+                <div class="glass-card p-8 reveal" style="transition-delay:600ms">
+                    <div class="w-12 h-12 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6"><i class="ph ph-chart-line"></i></div>
+                    <h3 class="text-lg font-semibold mb-3">SonarCloud</h3>
+                    <p class="text-gray-400 text-sm">Análise estática e cobertura de testes integrada ao CI. Quality Gate: OK em todos os serviços. Cobertura acima de 90% nos serviços de domínio.</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CI/CD -->
-  <section id="cicd">
-    <p class="section-label">CI/CD</p>
-    <h2>4 workflows por repositório</h2>
-    <p class="section-desc">GitHub Actions com pipelines independentes para deploy, infraestrutura, qualidade e Kubernetes. Cada serviço tem autonomia total de deploy.</p>
+    <!-- Repositórios -->
+    <section id="repos" class="py-24 px-6 bg-surface border-y border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 reveal">
+                <div class="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-accent2 mb-6">
+                    <i class="ph ph-git-fork align-middle mr-1"></i> Organização TechChallenge01
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Os 7 Repositórios</h2>
+                <p class="text-gray-400 max-w-2xl">Cada serviço em seu próprio repositório com CI/CD, testes e deploy independentes.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <a href="https://github.com/TechChallenge01/TechChallenge.OS" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:100ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl"><i class="ph ph-wrench"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.OS</h3>
+                    <p class="text-gray-400 text-sm mb-3">Ciclo de vida das Ordens de Serviço. Ponto de entrada da Saga coreografada.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.OS&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenge.Billing" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:200ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl"><i class="ph ph-money"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.Billing</h3>
+                    <p class="text-gray-400 text-sm mb-3">Orçamentos e pagamentos com Mercado Pago. Aguarda confirmação de pagamento na Saga.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.Billing&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenge.Cadastro" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:300ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl"><i class="ph ph-users"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.Cadastro</h3>
+                    <p class="text-gray-400 text-sm mb-3">Clientes, produtos e emissão de JWT. Único provedor de identidade do sistema.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.Cadastro&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenge.Estoque" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:400ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl"><i class="ph ph-package"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.Estoque</h3>
+                    <p class="text-gray-400 text-sm mb-3">Reserva e liberação de peças. Guardião de recursos na Saga com rollback automático.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.Estoque&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenge.Execucao" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:500ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-2xl"><i class="ph ph-lightning"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.Execucao</h3>
+                    <p class="text-gray-400 text-sm mb-3">Fila de execução dos reparos. Inicia após pagamento e notifica ao concluir.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.Execucao&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenge.bff" target="_blank" class="glass-card p-8 group block reveal" style="transition-delay:600ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl"><i class="ph ph-browsers"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenge.bff <span class="text-xs font-normal text-gray-500">(este repositório)</span></h3>
+                    <p class="text-gray-400 text-sm mb-3">Gateway + Frontend React. Único ponto de entrada para o cliente com validação JWT.</p>
+                    <img src="https://sonarcloud.io/api/project_badges/measure?project=TechChallenge01_TechChallenge.bff&metric=alert_status" alt="Quality Gate" class="h-5">
+                </a>
+                <a href="https://github.com/TechChallenge01/TechChallenger.auth" target="_blank" class="glass-card p-8 group block reveal md:col-start-1 md:col-span-2 lg:col-span-1" style="transition-delay:700ms">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-2xl"><i class="ph ph-function"></i></div>
+                        <i class="ph ph-arrow-up-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">TechChallenger.auth</h3>
+                    <p class="text-gray-400 text-sm mb-3">Auth Service em AWS Lambda. Autenticação por CPF + SQL Server no RDS (banco relacional).</p>
+                </a>
+            </div>
 
-    <div class="pipeline">
-      <div class="pipe-stage">
-        <div class="pipe-stage-num">deploy.yml</div>
-        <h4>Deploy ECS</h4>
-        <div class="pipe-step ok">Checkout código</div>
-        <div class="pipe-step ok">Build Docker</div>
-        <div class="pipe-step ok">Push ECR</div>
-        <div class="pipe-step ok">ECS update-service</div>
-        <div class="pipe-step ok">Wait stable</div>
-      </div>
-      <div class="pipe-stage">
-        <div class="pipe-stage-num">infra.yml</div>
-        <h4>Terraform</h4>
-        <div class="pipe-step ok">terraform init</div>
-        <div class="pipe-step ok">terraform validate</div>
-        <div class="pipe-step ok">terraform plan</div>
-        <div class="pipe-step ok">terraform apply</div>
-        <div class="pipe-step ok">S3 backend</div>
-      </div>
-      <div class="pipe-stage">
-        <div class="pipe-stage-num">quality.yml</div>
-        <h4>Testes + Sonar</h4>
-        <div class="pipe-step ok">dotnet restore</div>
-        <div class="pipe-step ok">sonarscanner begin</div>
-        <div class="pipe-step ok">dotnet build</div>
-        <div class="pipe-step ok">dotnet test + coverage</div>
-        <div class="pipe-step ok">sonarscanner end</div>
-      </div>
-      <div class="pipe-stage">
-        <div class="pipe-stage-num">k8s-deploy.yml</div>
-        <h4>Deploy K8s</h4>
-        <div class="pipe-step ok">aws eks update-kubeconfig</div>
-        <div class="pipe-step ok">kubectl apply -f k8s/</div>
-        <div class="pipe-step ok">kubectl set image</div>
-        <div class="pipe-step ok">rollout status</div>
-        <div class="pipe-step" style="color:var(--amber)">workflow_dispatch</div>
-      </div>
-    </div>
+            <div class="mt-10 text-center reveal">
+                <a href="https://sonarcloud.io/organizations/techchallenge01/projects" target="_blank"
+                   class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/5 text-white text-sm font-medium hover:bg-white/10 transition-all">
+                    <i class="ph ph-chart-bar text-lg"></i> Ver todos os Quality Gates no SonarCloud
+                </a>
+            </div>
+        </div>
+    </section>
 
-    <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--fg-muted);margin-bottom:8px;">TRIGGERS</div>
-        <div style="font-size:13px;color:var(--fg-muted)">deploy.yml + infra.yml + quality.yml disparam em <code>push main</code>. k8s-deploy.yml é manual via <code>workflow_dispatch</code> com input <code>image_tag</code>.</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--fg-muted);margin-bottom:8px;">PATH FILTERS</div>
-        <div style="font-size:13px;color:var(--fg-muted)">deploy.yml só dispara em mudanças em <code>src/</code> ou <code>Dockerfile</code>. infra.yml em <code>infra/</code>. Evita deploys desnecessários.</div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-        <div style="font-size:12px;font-weight:600;color:var(--fg-muted);margin-bottom:8px;">SECRETS</div>
-        <div style="font-size:13px;color:var(--fg-muted)"><code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code>, <code>AWS_SESSION_TOKEN</code> (Academy, 4h), <code>SONAR_TOKEN</code>, variáveis de banco e JWT.</div>
-      </div>
-    </div>
-  </section>
+    <!-- Team -->
+    <section id="team" class="py-24 px-6 border-t border-white/10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-12 reveal">Equipe — FIAP 15SOAT</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-card p-8 flex flex-col items-center reveal" style="transition-delay:100ms">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 p-1 mb-4">
+                        <div class="w-full h-full bg-surface rounded-full flex items-center justify-center text-3xl font-bold text-white">JF</div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">João Freitas</h3>
+                    <p class="text-gray-400 text-sm mb-4">RM: 371198</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/joaofreittas1" target="_blank" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-github-logo"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="glass-card p-8 flex flex-col items-center reveal" style="transition-delay:200ms">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 p-1 mb-4">
+                        <div class="w-full h-full bg-surface rounded-full flex items-center justify-center text-3xl font-bold text-white">LP</div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Leonardo Pagni</h3>
+                    <p class="text-gray-400 text-sm mb-4">RM: 372168</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/Leonardo-pagni" target="_blank" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="ph ph-github-logo"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-</div>
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/10 bg-black text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="ph ph-hexagon-fill text-accent"></i>
+                TechChallenger &copy; 2026
+            </div>
+            <div>Projeto acadêmico construído para o TechChallenge da FIAP · Fase 4</div>
+            <div class="flex gap-4 flex-wrap justify-center">
+                <span>.NET 10</span>
+                <span>MongoDB</span>
+                <span>RabbitMQ</span>
+                <span>AWS ECS Fargate</span>
+                <span>AWS Lambda</span>
+                <span>SonarCloud</span>
+                <span>GitHub Actions</span>
+            </div>
+        </div>
+    </footer>
 
-<!-- FOOTER -->
-<footer>
-  <p style="font-weight:600;margin-bottom:4px;">TechChallenger — SOAT Pós-graduação · Fase 4</p>
-  <p>Sistema de Oficina Mecânica com Microsserviços, Saga Pattern Coreografado e Clean Architecture</p>
-  <div class="footer-links">
-    <a href="https://github.com/TechChallenge01/TechChallenge.OS" target="_blank">OS Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.Billing" target="_blank">Billing Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.Cadastro" target="_blank">Cadastro Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.Estoque" target="_blank">Estoque Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.Execucao" target="_blank">Execução Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.auth" target="_blank">Auth Service</a>
-    <a href="https://github.com/TechChallenge01/TechChallenge.bff" target="_blank">BFF + Frontend</a>
-  </div>
-  <p style="margin-top:16px;font-size:11px;">Stack: .NET 10 · MongoDB · RabbitMQ · AWS ECS Fargate · EKS · Lambda · Terraform · GitHub Actions · SonarCloud</p>
-  <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
-    <a href="TechChallenger-Postman-Collection.json" download
-       style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;background:var(--amber-dim);border:1px solid rgba(251,191,36,.25);color:var(--amber);font-size:13px;font-weight:600;text-decoration:none;transition:opacity .15s;"
-       onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Postman Collection
-    </a>
-    <span style="font-size:12px;color:var(--fg-dim);display:flex;align-items:center;">30+ endpoints · JWT auto-save · 7 serviços</span>
-  </div>
-</footer>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { root: null, rootMargin: '0px', threshold: 0.15 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
 </body>
 </html>
